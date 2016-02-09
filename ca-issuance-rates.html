@@ -1,0 +1,56 @@
+<html>
+<head>
+  <title>LE Rates</title>
+</head>
+<body>
+  <div id="charts"></div>
+
+  <script type="text/javascript" src="js/plotly.js"></script>
+  <script type="text/javascript" src="js/plot-util.js"></script>
+  <script>
+"use strict";
+
+var plotList = new PlotList();
+
+function transposeWithDates(dataSet, transposeKey, dataKeys) {
+  let resultData = [];
+  let keys = {};
+  for (var idx in dataSet) {
+    let obj = { date: dataSet[idx]['date'] };
+    for (var keyIdx in dataKeys) {
+      let keyName = dataSet[idx][transposeKey];
+      if (dataKeys.length > 1) {
+        keyName = dataSet[idx][transposeKey] + " " + dataKeys[keyIdx];
+      }
+      keys[keyName] = 1;
+      obj[keyName] = dataSet[idx][dataKeys[keyIdx]];
+    }
+    resultData.push(obj);
+  }
+  return [ resultData, Object.keys(keys) ];
+}
+
+function rateListener () {
+  if (this.status != 200) return;
+
+  let master = plotList.timeSeries("charts");
+
+  let certs = master.createYAxis();
+
+  let dataSetArray = transposeWithDates(JSON.parse(this.responseText), "issuer", ["numIssued"])
+  for (var idx in dataSetArray[1]) {
+    certs.registerPlot(dataSetArray[1][idx], {name: dataSetArray[1][idx]});
+  }
+
+  master.loadResponse(dataSetArray[0]);
+  master.plot({"title":"Certificates per 24 hours"});
+}
+
+var oReq = new XMLHttpRequest();
+oReq.addEventListener("load", rateListener);
+oReq.open("GET", "http://localhost:9000/rate/all/certs/24");
+oReq.send();
+
+  </script>
+</body>
+</html>

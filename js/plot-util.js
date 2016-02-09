@@ -58,12 +58,12 @@ class TimeSeriesPlot {
     for (var key in this._series) {
       ret.push(this._series[key]);
     }
-    return ret; 
+    return ret;
   }
 
   loadResponse(obj) {
     for (var key in obj) {
-      var observation = obj[key];    
+      var observation = obj[key];
       var dateString = dateConvert(obj[key]['date']);
 
       for (var stat in observation) {
@@ -92,7 +92,7 @@ class TimeSeriesPlot {
       layout[axis.layoutYAxisName] = axis.layout;
     }
 
-    console.log(this.array, layout);    
+    console.log(this.array, layout);
     return Plotly.plot(divObj, this.array, layout );
   }
 }

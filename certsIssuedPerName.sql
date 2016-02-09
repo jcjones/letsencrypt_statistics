@@ -8,9 +8,8 @@ FROM
     (SELECT 
         n.name, COUNT(1) AS numIssued
     FROM
-        `ct`.name AS n
-	JOIN `ct`.certificate AS c ON n.issuer = c.issuer
-        AND n.serial = c.serial
+        `ctdb`.name AS n
+	JOIN `ctdb`.le_certificate AS c ON n.certID = c.certID
     WHERE
 		c.notAfter > NOW()
     GROUP BY n.name

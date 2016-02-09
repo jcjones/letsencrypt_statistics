@@ -12,18 +12,16 @@ FROM
     (SELECT 
         n.name, COUNT(1) AS numIssued
     FROM
-        `ct`.name AS n
-    JOIN `ct`.certificate AS c ON n.issuer = c.issuer
-        AND n.serial = c.serial
+        `ctdb`.name AS n
+    JOIN `ctdb`.le_certificate AS c ON n.certID = c.certID
 	WHERE
 		c.notBefore > DATE_SUB(NOW(), INTERVAL 180 DAY)
     GROUP BY n.name
     ORDER BY numIssued DESC) AS nd
         JOIN
-    `ct`.name AS n ON n.name = nd.name
+    `ctdb`.name AS n ON n.name = nd.name
         JOIN
-    `ct`.certificate AS c ON n.issuer = c.issuer
-        AND n.serial = c.serial
+    `ctdb`.le_certificate AS c ON n.certID = c.certID
 WHERE
     nd.numIssued > 25
 GROUP BY name

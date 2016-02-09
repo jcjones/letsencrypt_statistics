@@ -1,10 +1,10 @@
 SELECT 
-    certificate.serial, GROUP_CONCAT(name.name, " ") as names, certificate.notBefore
+    c.serial, GROUP_CONCAT(n.name, " ") as names, c.notBefore
 FROM
-    name
-        JOIN
-    certificate ON name.serial = certificate.serial
+    name as n
+        JOIN 
+    le_certificate as c ON n.certID = c.certID
 WHERE
-    name LIKE '%allthatnet.com' AND notBefore >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+    name LIKE '%bin.coffee' AND notBefore >= DATE_SUB(NOW(), INTERVAL 7 DAY)
 GROUP BY serial
 ORDER BY notBefore ASC;
